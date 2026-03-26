@@ -1,0 +1,35 @@
+/* App.css */
+/* Add any specific component styles here if needed, 
+   though most are in index.css for this simple demo. */
+
+.message.user .content {
+  border-color: var(--neon-blue);
+  box-shadow: inset 0 0 5px rgba(0, 243, 255, 0.2);
+}
+
+.message.ai .content {
+  border-color: #444;
+  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.05);
+}
+
+.intel-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--neon-pink);
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #222;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-blue);
+}
