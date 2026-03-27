@@ -11,7 +11,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
-// Routes
+
 app.use('/api', chatRoutes);
 
 app.listen(PORT, () => {

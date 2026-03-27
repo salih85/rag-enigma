@@ -6,16 +6,25 @@
   --text-green: #33ff33;
 }
 
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
   background-color: var(--bg-dark);
   font-family: 'Courier New', Courier, monospace;
   color: var(--text-green);
   overflow: hidden;
 }
 
+#root {
+  width: 100%;
+  height: 100%;
+}
+
 .cyberpunk-app {
-  height: 100vh;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -87,6 +96,7 @@ body {
   flex-direction: column;
   gap: 1.5rem;
   padding-bottom: 1rem;
+  min-height: 0;
 }
 
 .message {

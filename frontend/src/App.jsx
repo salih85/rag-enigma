@@ -13,6 +13,44 @@ function App() {
   const [lore, setLore] = useState([]);
   const scrollRef = useRef(null);
 
+  // New Features Content
+  const [evidence] = useState([
+    { id: 'EV-01', name: 'Mono-wire Fragment', desc: 'Found at the scene. Traces of synthetic blood matching Kenji Sato.', status: 'ANALYZED' },
+    { id: 'EV-02', name: 'Corrupted Datapad', desc: 'Encrypted drive recovered from victim. Needs decryption.', status: 'ENCRYPTED' }
+  ]);
+  const [decryptInput, setDecryptInput] = useState('');
+  const [decryptResult, setDecryptResult] = useState('');
+  const [attempts, setAttempts] = useState(3);
+  const [isScanning, setIsScanning] = useState(false);
+
+  const handleScan = () => {
+    setIsScanning(true);
+    setTimeout(() => {
+      setEvidence(prev => [
+        ...prev,
+        { id: 'EV-03', name: 'Security Footage', desc: 'Sector 7 alleyway. Shows a figure cloaked in optical camo.', status: 'NEW' }
+      ]);
+      setIsScanning(false);
+    }, 2000);
+  };
+
+  const submitDecrypt = (e) => {
+    e.preventDefault();
+    if (attempts <= 0 || decryptResult.includes('GRANTED')) return;
+
+    if (decryptInput.toLowerCase() === 'ghost') {
+      setDecryptResult('>>> ACCESS GRANTED: Kenji was meeting a Ghost operative named Cipher.');
+    } else {
+      const newAttempts = attempts - 1;
+      setAttempts(newAttempts);
+      if (newAttempts <= 0) {
+        setDecryptResult('>>> SYSTEM LOCKED. ALL DATA WIPED.');
+      } else {
+        setDecryptResult(`>>> ACCESS DENIED: Invalid passcode. ${newAttempts} attempts remaining.`);
+      }
+    }
+  };
+
   useEffect(() => {
     fetch('http://localhost:5000/api/lore')
       .then(res => res.json())
@@ -141,19 +179,51 @@ function App() {
           ) : activePanel === 'evidence' ? (
             <div className="lore-db-view">
                <h2>EVIDENCE_LOG</h2>
-               <div className="intel-card" style={{marginTop: '2rem', padding: '2rem', textAlign: 'center'}}>
-                 <Fingerprint size={48} style={{margin: '0 auto', color: 'var(--neon-pink)', opacity: 0.5}} />
-                 <h3 style={{marginTop: '1rem'}}>NO NEW EVIDENCE FOUND</h3>
-                 <p style={{opacity: 0.7}}>Scan crime scenes or interrogate suspects to unlock evidence.</p>
+               <div className="lore-grid">
+                 {evidence.map(item => (
+                   <div key={item.id} className="lore-entry">
+                     <div className="entry-id">{item.id}</div>
+                     <div className="entry-text" style={{color: 'var(--neon-pink)', fontWeight: 'bold'}}>{item.name}</div>
+                     <div className="entry-text">{item.desc}</div>
+                     <div className="entry-id" style={{marginTop: '1rem', color: item.status === 'ANALYZED' ? 'var(--text-green)' : 'red'}}>[STATUS: {item.status}]</div>
+                   </div>
+                 ))}
                </div>
+               
+               {evidence.length < 3 && (
+                 <button 
+                   onClick={handleScan} 
+                   disabled={isScanning}
+                   style={{marginTop: '2rem', padding: '1rem', width: '100%', background: 'var(--neon-blue)', color: 'black', fontWeight: 'bold'}}
+                 >
+                   {isScanning ? 'SCANNING SECTOR 7 (. . .)' : 'INITIATE SENSOR SCAN'}
+                 </button>
+               )}
             </div>
           ) : (
             <div className="lore-db-view">
                <h2>DECRYPTION_MODULE</h2>
-               <div className="intel-card" style={{marginTop: '2rem', padding: '2rem', textAlign: 'center'}}>
-                 <Search size={48} style={{margin: '0 auto', color: 'var(--neon-blue)', opacity: 0.5}} />
-                 <h3 style={{marginTop: '1rem'}}>MODULE OFFLINE</h3>
-                 <p style={{opacity: 0.7}}>Requires Level 3 Clearance to decrypt secure Arasaka-X files.</p>
+               <div className="intel-card" style={{marginTop: '2rem', padding: '2rem'}}>
+                 <Search size={48} style={{margin: '0 auto 1rem', display: 'block', color: 'var(--neon-blue)', opacity: 0.5}} />
+                 <h3>ENTER OVERRIDE CODE</h3>
+                 <p style={{opacity: 0.7, marginBottom: '2rem'}}>Target: EV-02 (Corrupted Datapad). Warning: {attempts} attempts remaining before drive wipe.</p>
+                 
+                 <form onSubmit={submitDecrypt} style={{display: 'flex', gap: '1rem'}}>
+                   <input 
+                     type="text" 
+                     placeholder="Enter 5-letter group name..." 
+                     value={decryptInput}
+                     onChange={(e) => setDecryptInput(e.target.value)}
+                     disabled={attempts <= 0 || decryptResult.includes('GRANTED')}
+                   />
+                   <button type="submit" disabled={attempts <= 0 || decryptResult.includes('GRANTED')}>HACK</button>
+                 </form>
+
+                 {decryptResult && (
+                   <div style={{marginTop: '2rem', padding: '1rem', border: '1px solid', borderColor: decryptResult.includes('GRANTED') ? 'var(--text-green)' : 'red'}}>
+                     {decryptResult}
+                   </div>
+                 )}
                </div>
             </div>
           )}
@@ -173,7 +243,7 @@ function App() {
       </main>
 
       <footer className="terminal-footer">
-        <p>© 2084 ANTIGRAVITY SYSTEMS. ACCESS GRANTED.</p>
+        <p>© 2084 DEVELOPED BY SALIH. ACCESS GRANTED.</p>
       </footer>
     </div>
   )
