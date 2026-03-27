@@ -35,6 +35,5 @@ You play as a detective in the year 2084, navigating the neon-lit streets of Neo
    # In frontend terminal
    npm run dev
    ```
-
 ---
 *Developed by Salih.*
