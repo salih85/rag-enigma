@@ -8,8 +8,8 @@ const generateResponse = async (query, context) => {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Try gemini-1.5-flash (most reliable)
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // Try gemini-2.5-flash (most reliable and supported)
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const prompt = `You are a Cyberpunk Detective AI in the year 2084. 
         Context lore:
