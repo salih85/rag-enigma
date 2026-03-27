@@ -21,9 +21,13 @@ function App() {
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      setTimeout(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+      }, 50);
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -73,11 +77,17 @@ function App() {
             <Database size={18} />
             <span>LORE_DB</span>
           </div>
-          <div className="panel-item">
+          <div 
+            className={`panel-item ${activePanel === 'evidence' ? 'active' : ''}`}
+            onClick={() => setActivePanel('evidence')}
+          >
             <Fingerprint size={18} />
             <span>EVIDENCE</span>
           </div>
-          <div className="panel-item">
+          <div 
+            className={`panel-item ${activePanel === 'decrypt' ? 'active' : ''}`}
+            onClick={() => setActivePanel('decrypt')}
+          >
             <Search size={18} />
             <span>DECRYPT</span>
           </div>
@@ -116,7 +126,7 @@ function App() {
                 <button type="submit" disabled={isLoading}>SEND</button>
               </form>
             </>
-          ) : (
+          ) : activePanel === 'lore' ? (
             <div className="lore-db-view">
               <h2>LOCAL_KNOWLEDGE_BASE</h2>
               <div className="lore-grid">
@@ -127,6 +137,24 @@ function App() {
                   </div>
                 ))}
               </div>
+            </div>
+          ) : activePanel === 'evidence' ? (
+            <div className="lore-db-view">
+               <h2>EVIDENCE_LOG</h2>
+               <div className="intel-card" style={{marginTop: '2rem', padding: '2rem', textAlign: 'center'}}>
+                 <Fingerprint size={48} style={{margin: '0 auto', color: 'var(--neon-pink)', opacity: 0.5}} />
+                 <h3 style={{marginTop: '1rem'}}>NO NEW EVIDENCE FOUND</h3>
+                 <p style={{opacity: 0.7}}>Scan crime scenes or interrogate suspects to unlock evidence.</p>
+               </div>
+            </div>
+          ) : (
+            <div className="lore-db-view">
+               <h2>DECRYPTION_MODULE</h2>
+               <div className="intel-card" style={{marginTop: '2rem', padding: '2rem', textAlign: 'center'}}>
+                 <Search size={48} style={{margin: '0 auto', color: 'var(--neon-blue)', opacity: 0.5}} />
+                 <h3 style={{marginTop: '1rem'}}>MODULE OFFLINE</h3>
+                 <p style={{opacity: 0.7}}>Requires Level 3 Clearance to decrypt secure Arasaka-X files.</p>
+               </div>
             </div>
           )}
         </section>
